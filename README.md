@@ -1,6 +1,6 @@
 # QustomMenuText
 
-#{description}
+a mod for the oculus quest version of beat saber that replaces the "BEAT SABER" logo in the menu to a dynamically editable text object
 
 ## Credits
 
