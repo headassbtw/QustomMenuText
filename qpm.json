@@ -1,0 +1,29 @@
+{
+  "sharedDir": "shared",
+  "dependenciesDir": "extern",
+  "info": {
+    "name": "Qustom Menu Text",
+    "id": "QustomMenuText",
+    "version": "0.1.0",
+    "url": null,
+    "additionalData": {}
+  },
+  "dependencies": [
+    {
+      "id": "codegen",
+      "versionRange": "*",
+      "additionalData": {}
+    },
+    {
+      "id": "beatsaber-hook",
+      "versionRange": "<=1.1.5",
+      "additionalData": {}
+    },
+    {
+      "id": "bs-utils",
+      "versionRange": "=0.5.8",
+      "additionalData": {}
+    }
+  ],
+  "additionalData": {}
+}
