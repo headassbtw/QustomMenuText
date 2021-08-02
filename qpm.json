@@ -16,12 +16,12 @@
     },
     {
       "id": "beatsaber-hook",
-      "versionRange": "<=1.1.5",
+      "versionRange": "^2.0.0",
       "additionalData": {}
     },
     {
       "id": "bs-utils",
-      "versionRange": "=0.5.8",
+      "versionRange": "^0.6.2",
       "additionalData": {}
     }
   ],

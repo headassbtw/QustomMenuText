@@ -62,8 +62,8 @@ static std::vector<std::vector<Il2CppString*>> readFromFile() {
         if (line[0] == '#') {}
         else if (line[0] != '#') {
 
-            getLogger().info(string_format("line:"));
-            getLogger().info(line);
+            getLogger().info("line:");
+            getLogger().info(line.c_str());
 
 
             //commits entry when a new line is detected
