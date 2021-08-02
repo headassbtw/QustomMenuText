@@ -29,6 +29,7 @@
 #include "UnityEngine/RectTransform.hpp"
 #include "UnityEngine/RectTransform_Axis.hpp"
 #include "bs-utils/shared/utils.hpp"
+#include "beatsaber-hook/shared/utils/hooking.hpp"
 
 #include "beatsaber-hook/shared/utils/il2cpp-utils.hpp"
 #include "beatsaber-hook/shared/utils/utils.h"
@@ -63,14 +64,13 @@ static std::vector<std::vector<Il2CppString*>> readFromFile() {
         else if (line[0] != '#') {
 
             getLogger().info("line:");
-            getLogger().info(line.c_str());
 
 
             //commits entry when a new line is detected
             if (line == "" || line[0] == '\n') {
                 entriesInFile.push_back(currentEntry);
                 currentEntry.clear();
-                getLogger().info(string_format("added entry"));
+                getLogger().info("added entry");
             }
             else {
                 //commits current line to entry
@@ -199,12 +199,33 @@ static UnityEngine::GameObject* loadTextPrefab() {
     }
     
 }
-MAKE_HOOK_OFFSETLESS(MainMenuViewController_DidActivate, void, GlobalNamespace::MainMenuViewController* self, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
+//MAKE_HOOK_MATCH(MainMenuViewController_DidActivate, GlobalNamespace::MainMenuViewController* self, void, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
+//MAKE_HOOK_MATCH(MainMenuViewController_DidActivate, &GlobalNamespace::MainMenuViewController::DidActivate, MenuController*, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
+//MAKE_HOOK_MATCH(MainMenuViewController_DidActivate, &GlobalNamespace::MainMenuViewController::DidActivate, void, GlobalNamespace::MainMenuViewController* self)
+MAKE_HOOK_MATCH(MainMenuViewController_DidActivate, &GlobalNamespace::MainMenuViewController::DidActivate, void, GlobalNamespace::MainMenuViewController* self, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
+{
+#pragma region AssetBundle Loading
+    try
+    {
+        Il2CppString* bundleFile = il2cpp_utils::createcsstr(bs_utils::getDataDir(modInfo) + "/Fonts/NeonTubes2");
+
+        textBundle = UnityEngine::AssetBundle::LoadFromFile(bundleFile);
+
+        getLogger().info("Loaded Bundle");
+    }
+    catch (const std::exception&)
+    {
+        getLogger().critical("Failed to load AssetBundle!");
+    }
+#pragma endregion
 
 
-    getLogger().info(string_format("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));
+
+
+
+    getLogger().info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     MainMenuViewController_DidActivate(self, firstActivation, addedToHierarchy, screenSystemEnabling);
-    getLogger().info(string_format("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));
+    getLogger().info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 #pragma region yeetDefaultLogo
     /*
         UnityEngine::GameObject* beat1 = UnityEngine::GameObject::Find(il2cpp_utils::createcsstr("BatLogo"));
@@ -222,7 +243,7 @@ MAKE_HOOK_OFFSETLESS(MainMenuViewController_DidActivate, void, GlobalNamespace::
         if(logo->get_activeInHierarchy() == true)  logo->SetActive(false);
 #pragma endregion
     if (textPrefab == nullptr) textPrefab = loadTextPrefab();
-    getLogger().info(string_format("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));
+    getLogger().info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     // Logo Top Pos : 0.63, 18.61, 26.1
     // Logo Bottom Pos : 0, 14, 26.1
     
@@ -237,7 +258,6 @@ MAKE_HOOK_OFFSETLESS(MainMenuViewController_DidActivate, void, GlobalNamespace::
     if (mainText == nullptr) {
         UnityEngine::GameObject::Instantiate(textPrefab);
         UnityEngine::GameObject* textObj = UnityEngine::GameObject::Find(il2cpp_utils::createcsstr("ShitFuckBalls"));
-        getLogger().info(string_format("Text Object: %p", textObj));
         textObj->set_name(il2cpp_utils::createcsstr("CustomMenuText"));
         textObj->SetActive(false);
         UnityEngine::MeshRenderer* mainMaterial = textObj->GetComponent<UnityEngine::MeshRenderer*>();
@@ -290,32 +310,14 @@ MAKE_HOOK_OFFSETLESS(MainMenuViewController_DidActivate, void, GlobalNamespace::
 
     //pickRandomEntry();
 }
-MAKE_HOOK_OFFSETLESS(ShaderWarmupSceneSetup_Start, System::Collections::IEnumerator*, GlobalNamespace::ShaderWarmupSceneSetup* self) {
 
-    allEntries = readFromFile();
-
-
-    try
-    {
-        Il2CppString* bundleFile = il2cpp_utils::createcsstr(bs_utils::getDataDir(modInfo) + "/Fonts/NeonTubes2");
-
-        textBundle = UnityEngine::AssetBundle::LoadFromFile(bundleFile);
-
-        getLogger().info("Loaded Bundle");
-    }
-    catch (const std::exception&)
-    {
-        getLogger().critical("Failed to load AssetBundle!");
-    }
-    return ShaderWarmupSceneSetup_Start(self);
-}
 
 
 
 // Called at the early stages of game loading
 extern "C" void setup(ModInfo& info) {
     info.id = "QustomMenuText";
-    info.version = "0.1.0";
+    info.version = "0.1.1";
     modInfo = info;
 	
     getConfig().Load(); // Load the config file
@@ -332,9 +334,8 @@ extern "C" void load() {
     getLogger().info("Installing hooks...");
     // Install our hooks (none defined yet)
 
-    INSTALL_HOOK_OFFSETLESS(getLogger(), MainMenuViewController_DidActivate, il2cpp_utils::FindMethodUnsafe("", "MainMenuViewController", "DidActivate", 3));
+    INSTALL_HOOK(getLogger(), MainMenuViewController_DidActivate);
 
-    INSTALL_HOOK_OFFSETLESS(getLogger(), ShaderWarmupSceneSetup_Start, il2cpp_utils::FindMethodUnsafe("", "ShaderWarmupSceneSetup", "Start", 0));
 
 
     getLogger().info("Installed all hooks!");
