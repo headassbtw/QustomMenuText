@@ -28,7 +28,7 @@
 #include "UnityEngine/Texture.hpp"
 #include "UnityEngine/RectTransform.hpp"
 #include "UnityEngine/RectTransform_Axis.hpp"
-#include "bs-utils/shared/utils.hpp"
+//#include "bs-utils/shared/utils.hpp"
 #include "beatsaber-hook/shared/utils/hooking.hpp"
 
 #include "beatsaber-hook/shared/utils/il2cpp-utils.hpp"
@@ -41,20 +41,20 @@ static ModInfo modInfo; // Stores the ID and version of our mod, and is sent to 
 static TMPro::TextMeshPro* mainText = nullptr;
 static TMPro::TextMeshPro* bottomText = nullptr;
 
-static std::vector<std::vector<Il2CppString*>> allEntries;
+static std::vector<std::vector<std::string>> allEntries;
 UnityEngine::GameObject* logo = nullptr;
 static UnityEngine::GameObject* textPrefab = nullptr;
 static UnityEngine::AssetBundle* textBundle = nullptr;
 
-static std::vector<std::vector<Il2CppString*>> readFromFile() {
-
+static std::vector<std::vector<std::string>> readFromFile() {
+    getLogger().info("reading from file-");
     //the list of entries to return
-    std::vector<std::vector<Il2CppString*>> entriesInFile;
+    std::vector<std::vector<std::string>> entriesInFile;
 
     //creates a stream from the file, and a temporary line and entry to store stuff to
     std::ifstream infile(bs_utils::getDataDir(modInfo) + "/MenuText.txt");
     std::string line;
-    std::vector<Il2CppString*> currentEntry;
+    std::vector<std::string> currentEntry;
     while (std::getline(infile, line))
     {
         
@@ -74,7 +74,7 @@ static std::vector<std::vector<Il2CppString*>> readFromFile() {
             }
             else {
                 //commits current line to entry
-                currentEntry.push_back(il2cpp_utils::createcsstr(line));
+                currentEntry.push_back(line);
             }
         }
     }
@@ -83,7 +83,8 @@ static std::vector<std::vector<Il2CppString*>> readFromFile() {
         //just in case the last entry doesn't have a new line
         entriesInFile.push_back(currentEntry);
     }
-
+    if(entriesInFile.empty())
+        getLogger().info("no entries");
     return entriesInFile;
 }
 
@@ -108,11 +109,11 @@ static void tmpColorer(TMPro::TextMeshPro* in, UnityEngine::Color cl) {
     tempMat->SetColor(il2cpp_utils::createcsstr("_FaceColor"), SetSaturation(cl, 0.65f));
 }
 
-static void setText(std::vector<Il2CppString*> lines) {
+static void setText(std::vector<std::string> lines) {
 
     if (lines.size() == 2) {
-        mainText->SetText(lines[0]);
-        bottomText->SetText(lines[1]);
+        mainText->SetText(il2cpp_utils::newcsstr(lines[0]));
+        bottomText->SetText(il2cpp_utils::newcsstr(lines[1]));
     }
     else {
         bottomText->SetText(il2cpp_utils::createcsstr(""));
@@ -124,9 +125,9 @@ static void setText(std::vector<Il2CppString*> lines) {
 
         Il2CppString* temp;
 
-        for (Il2CppString* line : lines)
+        for (std::string line : lines)
         {
-            temp = System::String::Concat(temp, line, il2cpp_utils::createcsstr("\n"));
+            temp = System::String::Concat(temp, il2cpp_utils::newcsstr(line), il2cpp_utils::createcsstr("\n"));
         }
 
 
@@ -136,10 +137,10 @@ static void setText(std::vector<Il2CppString*> lines) {
         }
         catch (const std::exception&)
         {
-            std::vector<Il2CppString*> currentEntry;
+            std::vector<std::string> currentEntry;
 
-            currentEntry.push_back(il2cpp_utils::createcsstr("i almost crashed the game"));
-            currentEntry.push_back(il2cpp_utils::createcsstr("this is not a joke it legit did"));
+            currentEntry.push_back(("i almost crashed the game"));
+            currentEntry.push_back(("this is not a joke it legit did"));
 
             setText(currentEntry);
         }
@@ -158,10 +159,10 @@ static void pickRandomEntry() {
     }
     catch (const std::exception&)
     {
-        std::vector<Il2CppString*> currentEntry;
+        std::vector<std::string> currentEntry;
 
-        currentEntry.push_back(il2cpp_utils::createcsstr("i almost crashed the game"));
-        currentEntry.push_back(il2cpp_utils::createcsstr("this is not a joke it legit did"));
+        currentEntry.push_back(("i almost crashed the game"));
+        currentEntry.push_back(("this is not a joke it legit did"));
 
         setText(currentEntry);
 
@@ -204,6 +205,9 @@ static UnityEngine::GameObject* loadTextPrefab() {
 //MAKE_HOOK_MATCH(MainMenuViewController_DidActivate, &GlobalNamespace::MainMenuViewController::DidActivate, void, GlobalNamespace::MainMenuViewController* self)
 MAKE_HOOK_MATCH(MainMenuViewController_DidActivate, &GlobalNamespace::MainMenuViewController::DidActivate, void, GlobalNamespace::MainMenuViewController* self, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
 {
+    allEntries = readFromFile();
+
+
 #pragma region AssetBundle Loading
     try
     {
@@ -223,7 +227,7 @@ MAKE_HOOK_MATCH(MainMenuViewController_DidActivate, &GlobalNamespace::MainMenuVi
 
 
 
-    getLogger().info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+    getLogger().info("fuck you!");
     MainMenuViewController_DidActivate(self, firstActivation, addedToHierarchy, screenSystemEnabling);
     getLogger().info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 #pragma region yeetDefaultLogo
@@ -256,10 +260,16 @@ MAKE_HOOK_MATCH(MainMenuViewController_DidActivate, &GlobalNamespace::MainMenuVi
         if (mt) { mainText = mt->GetComponent<TMPro::TextMeshPro*>(); }
     }
     if (mainText == nullptr) {
-        UnityEngine::GameObject::Instantiate(textPrefab);
-        UnityEngine::GameObject* textObj = UnityEngine::GameObject::Find(il2cpp_utils::createcsstr("ShitFuckBalls"));
+        UnityEngine::GameObject* textObj = UnityEngine::GameObject::Instantiate(textPrefab);
         textObj->set_name(il2cpp_utils::createcsstr("CustomMenuText"));
         textObj->SetActive(false);
+        mainText = textObj->GetComponent<TMPro::TextMeshPro*>();
+        if(mainText == nullptr){
+            getLogger().info("main text was null, adding component");
+            mainText = textObj->AddComponent<TMPro::TextMeshPro*>();
+        }
+            if(mainText != nullptr)
+                getLogger().info("wait main text isn't null???");
         UnityEngine::MeshRenderer* mainMaterial = textObj->GetComponent<UnityEngine::MeshRenderer*>();
         mainText->set_alignment(TMPro::TextAlignmentOptions::Center);
         mainText->set_fontSize(12);
@@ -272,6 +282,7 @@ MAKE_HOOK_MATCH(MainMenuViewController_DidActivate, &GlobalNamespace::MainMenuVi
         mainText->set_overflowMode(TMPro::TextOverflowModes::Overflow);
         mainText->set_enableWordWrapping(false);
         textObj->SetActive(true);
+        getLogger().info("Done with top text");
     }
     UnityEngine::Vector3 topPos(0.0f, 18.61f, 26.1f);
     mainText->get_transform()->set_position(topPos);
@@ -285,11 +296,15 @@ MAKE_HOOK_MATCH(MainMenuViewController_DidActivate, &GlobalNamespace::MainMenuVi
         if (bt) { bottomText = bt->GetComponent<TMPro::TextMeshPro*>(); }
     }
     if (bottomText == nullptr) {
-        UnityEngine::GameObject::Instantiate(textPrefab);
-        UnityEngine::GameObject* textObj = UnityEngine::GameObject::Find(il2cpp_utils::createcsstr("ShitFuckBalls"));
+        //UnityEngine::GameObject::Instantiate(textPrefab);
+        UnityEngine::GameObject* textObj = UnityEngine::GameObject::Instantiate(textPrefab);
         textObj->set_name(il2cpp_utils::createcsstr("CustomMenuText-Bot"));
         textObj->SetActive(false);
         bottomText = textObj->GetComponent<TMPro::TextMeshPro*>();
+        if(bottomText == nullptr){
+            getLogger().info("bottom text was null, adding component");
+            bottomText = textObj->AddComponent<TMPro::TextMeshPro*>();
+        }
         bottomText->set_alignment(TMPro::TextAlignmentOptions::Center);
         bottomText->set_fontSize(12);
         UnityEngine::RectTransform* btRt = bottomText->get_rectTransform();
@@ -301,6 +316,7 @@ MAKE_HOOK_MATCH(MainMenuViewController_DidActivate, &GlobalNamespace::MainMenuVi
         bottomText->set_overflowMode(TMPro::TextOverflowModes::Overflow);
         bottomText->set_enableWordWrapping(false);
         textObj->SetActive(true);
+        getLogger().info("Done with BOTTOM TEXT");
     }
     UnityEngine::Vector3 botPos = UnityEngine::Vector3(0.0f, 14.0f, 26.1f);
     bottomText->get_transform()->set_localPosition(botPos);
@@ -308,7 +324,7 @@ MAKE_HOOK_MATCH(MainMenuViewController_DidActivate, &GlobalNamespace::MainMenuVi
     bottomText->set_text(il2cpp_utils::createcsstr("BEES"));
 #pragma endregion
 
-    //pickRandomEntry();
+    pickRandomEntry();
 }
 
 
