@@ -130,19 +130,19 @@ static void setText(std::vector<std::string> lines) {
         UnityEngine::Vector3 newPos = mainText->get_transform()->get_position();
         newPos.y = (newPos.y + bottomText->get_transform()->get_position().y) / 2;
         mainText->get_transform()->set_localPosition(newPos);
-        //tmpColorer(mainText, UnityEngine::Color::get_white());
 
-        Il2CppString* temp;
 
+        std::string temp;
         for (std::string line : lines)
         {
-            temp = System::String::Concat(temp, il2cpp_utils::newcsstr(line), il2cpp_utils::createcsstr("\n"));
+            temp += line + "\n";
         }
 
 
         try
         {
-            mainText->set_text(temp);
+            mainText->set_text(il2cpp_utils::newcsstr(temp));
+            tmpColorer(mainText, UnityEngine::Color::get_white());
         }
         catch (const std::exception&)
         {
@@ -163,10 +163,10 @@ static void pickRandomEntry() {
         srand(time(NULL));
 
 
-        int entryPicked = rand() % allEntries.size();
-        setText(allEntries[entryPicked]);
+        //int entryPicked = rand() % allEntries.size();
+        setText(allEntries[0]);
     }
-    catch (const std::exception&)
+    catch (std::exception &e)
     {
         std::vector<std::string> currentEntry;
 
@@ -209,9 +209,7 @@ static UnityEngine::GameObject* loadTextPrefab() {
     }
     
 }
-//MAKE_HOOK_MATCH(MainMenuViewController_DidActivate, GlobalNamespace::MainMenuViewController* self, void, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
-//MAKE_HOOK_MATCH(MainMenuViewController_DidActivate, &GlobalNamespace::MainMenuViewController::DidActivate, MenuController*, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
-//MAKE_HOOK_MATCH(MainMenuViewController_DidActivate, &GlobalNamespace::MainMenuViewController::DidActivate, void, GlobalNamespace::MainMenuViewController* self)
+
 MAKE_HOOK_MATCH(MainMenuViewController_DidActivate, &GlobalNamespace::MainMenuViewController::DidActivate, void, GlobalNamespace::MainMenuViewController* self, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
 {
     allEntries = readFromFile();
@@ -260,7 +258,7 @@ MAKE_HOOK_MATCH(MainMenuViewController_DidActivate, &GlobalNamespace::MainMenuVi
     // Logo Top Pos : 0.63, 18.61, 26.1
     // Logo Bottom Pos : 0, 14, 26.1
     
-    UnityEngine::Color topColor = UnityEngine::Color::get_green();
+    UnityEngine::Color topColor = UnityEngine::Color::get_red();
     UnityEngine::Color bottomColor = UnityEngine::Color::get_blue();
 
 #pragma region TopText
