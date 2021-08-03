@@ -51,6 +51,15 @@ static std::vector<std::vector<std::string>> readFromFile() {
     //the list of entries to return
     std::vector<std::vector<std::string>> entriesInFile;
 
+    if(!fileexists(bs_utils::getDataDir(modInfo) + "/MenuText.txt")){
+        std::ofstream MTFile(bs_utils::getDataDir(modInfo) + "/MenuText.txt");
+
+        MTFile << "Empty File\n/sdcard/ModData/com.beatgames.beatsaber/Mods/QustomMenuText/MenuText.txt";
+
+        MTFile.close();
+    }
+
+
     //creates a stream from the file, and a temporary line and entry to store stuff to
     std::ifstream infile(bs_utils::getDataDir(modInfo) + "/MenuText.txt");
     std::string line;

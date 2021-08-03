@@ -1,0 +1,26 @@
+
+{
+    "_QPVersion": "0.1.1",
+    "name": "Quest Custom Menu Text",
+    "id": "QustomMenuText",
+    "author": "headassbtw",
+    "version": "0.1.0",
+    "packageId": "com.beatgames.beatsaber",
+    "packageVersion": "1.16.4",
+    "description": "AAAAA",
+    "modFiles": [
+        "libQustomMenuText.so"
+    ],
+    "libraryFiles": [
+        "libbeatsaber-hook_2_2_4.so",
+        "libcodegen_0_12_5.so",
+        "libbs-utils.so"
+
+    ],
+    "fileCopies":[
+        {
+            "name": "NeonTubes2",
+            "destination": "/sdcard/ModData/com.beatgames.beatsaber/Mods/QustomMenuText/Fonts/Neontubes2"
+        }
+    ]
+}
