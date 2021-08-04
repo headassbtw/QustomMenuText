@@ -44,7 +44,6 @@ static TMPro::TextMeshPro* bottomText = nullptr;
 static std::vector<std::vector<std::string>> allEntries;
 UnityEngine::GameObject* logo = nullptr;
 static UnityEngine::GameObject* textPrefab = nullptr;
-static UnityEngine::AssetBundle* textBundle = nullptr;
 
 static std::vector<std::vector<std::string>> readFromFile() {
     getLogger().info("reading from file-");
@@ -110,8 +109,9 @@ static UnityEngine::Color SetSaturation(UnityEngine::Color in, float saturation)
 }
 
 static void tmpColorer(TMPro::TextMeshPro* in, UnityEngine::Color cl) {
-    UnityEngine::Material* tempMat = in->get_fontMaterial();
+    if(!in) return;
 
+    UnityEngine::Material* tempMat = in->get_fontMaterial();
     UnityEngine::Color tmpGlowColor = cl;
     tmpGlowColor.a = 0.5f;
     tempMat->SetColor(il2cpp_utils::createcsstr("_GlowColor"), cl);
@@ -120,11 +120,14 @@ static void tmpColorer(TMPro::TextMeshPro* in, UnityEngine::Color cl) {
 
 static void setText(std::vector<std::string> lines) {
 
-    if (lines.size() == 2) {
+    if(!mainText || !bottomText) return;
+    if (lines.size() <= 0) return;
+    else if (lines.size() == 2) {
         mainText->SetText(il2cpp_utils::newcsstr(lines[0]));
         bottomText->SetText(il2cpp_utils::newcsstr(lines[1]));
     }
     else {
+        tmpColorer(mainText, UnityEngine::Color::get_white());
         bottomText->SetText(il2cpp_utils::createcsstr(""));
 
         UnityEngine::Vector3 newPos = mainText->get_transform()->get_position();
@@ -137,34 +140,18 @@ static void setText(std::vector<std::string> lines) {
         {
             temp += line + "\n";
         }
-
-
-        try
-        {
-            mainText->set_text(il2cpp_utils::newcsstr(temp));
-            tmpColorer(mainText, UnityEngine::Color::get_white());
-        }
-        catch (const std::exception&)
-        {
-            std::vector<std::string> currentEntry;
-
-            currentEntry.push_back(("i almost crashed the game"));
-            currentEntry.push_back(("this is not a joke it legit did"));
-
-            setText(currentEntry);
-        }
-        
+        mainText->set_text(il2cpp_utils::newcsstr(temp));
     }
 }
 
 static void pickRandomEntry() {
     try
     {
-        srand(time(NULL));
+        srand(time(nullptr));
 
 
-        //int entryPicked = rand() % allEntries.size();
-        setText(allEntries[0]);
+        int entryPicked = rand() % allEntries.size();
+        setText(allEntries[entryPicked]);
     }
     catch (std::exception &e)
     {
@@ -191,16 +178,16 @@ Logger& getLogger() {
 }
 
 static UnityEngine::GameObject* loadTextPrefab() {
-
-
-
     try
     {
-        UnityEngine::GameObject* prefab;
+        Il2CppString* bundleFile = il2cpp_utils::createcsstr(bs_utils::getDataDir(modInfo) + "/Fonts/NeonTubes2");
 
-        prefab = textBundle->LoadAsset<UnityEngine::GameObject*>(il2cpp_utils::createcsstr("Text"));
+        UnityEngine::AssetBundle* textBundle = UnityEngine::AssetBundle::LoadFromFile(bundleFile);
 
-        return prefab;
+        getLogger().info("Loaded Bundle");
+
+        return textBundle->LoadAsset<UnityEngine::GameObject*>(il2cpp_utils::createcsstr("Text"));
+
     }
     catch (const std::exception&)
     {
@@ -218,43 +205,29 @@ MAKE_HOOK_MATCH(MainMenuViewController_DidActivate, &GlobalNamespace::MainMenuVi
 #pragma region AssetBundle Loading
     try
     {
-        Il2CppString* bundleFile = il2cpp_utils::createcsstr(bs_utils::getDataDir(modInfo) + "/Fonts/NeonTubes2");
-
-        textBundle = UnityEngine::AssetBundle::LoadFromFile(bundleFile);
-
-        getLogger().info("Loaded Bundle");
+        if(!textPrefab) textPrefab = loadTextPrefab();
     }
     catch (const std::exception&)
     {
         getLogger().critical("Failed to load AssetBundle!");
     }
 #pragma endregion
-
-
-
-
-
-    getLogger().info("fuck you!");
     MainMenuViewController_DidActivate(self, firstActivation, addedToHierarchy, screenSystemEnabling);
     getLogger().info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 #pragma region yeetDefaultLogo
+    //leaving these here for later when i decide to add image replacement support
     /*
         UnityEngine::GameObject* beat1 = UnityEngine::GameObject::Find(il2cpp_utils::createcsstr("BatLogo"));
         UnityEngine::GameObject* saber1 = UnityEngine::GameObject::Find(il2cpp_utils::createcsstr("SaberLogo"));
-        UnityEngine::GameObject* beat2 = UnityEngine::GameObject::Find(il2cpp_utils::createcsstr("BATNeon"));
-        UnityEngine::GameObject* saber2 = UnityEngine::GameObject::Find(il2cpp_utils::createcsstr("SaberNeon"));
         UnityEngine::GameObject* e = UnityEngine::GameObject::Find(il2cpp_utils::createcsstr("EFlickering"));
         beat1->SetActive(false);
         saber1->SetActive(false);
-        beat2->SetActive(false);
-        saber2->SetActive(false);
         e->SetActive(false);*/
 
         if(!logo) logo = UnityEngine::GameObject::Find(il2cpp_utils::createcsstr("Logo"));
         if(logo->get_activeInHierarchy() == true)  logo->SetActive(false);
 #pragma endregion
-    if (textPrefab == nullptr) textPrefab = loadTextPrefab();
-    getLogger().info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+    if (!textPrefab) textPrefab = loadTextPrefab();
     // Logo Top Pos : 0.63, 18.61, 26.1
     // Logo Bottom Pos : 0, 14, 26.1
     
