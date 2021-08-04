@@ -40,18 +40,20 @@ static ModInfo modInfo; // Stores the ID and version of our mod, and is sent to 
 
 static TMPro::TextMeshPro* mainText = nullptr;
 static TMPro::TextMeshPro* bottomText = nullptr;
-
+static std::string textPath = "";
 static std::vector<std::vector<std::string>> allEntries;
 UnityEngine::GameObject* logo = nullptr;
 static UnityEngine::GameObject* textPrefab = nullptr;
 
 static std::vector<std::vector<std::string>> readFromFile() {
+    if(textPath == "") textPath = bs_utils::getDataDir(modInfo) + "/MenuText.txt";
     getLogger().info("reading from file-");
     //the list of entries to return
     std::vector<std::vector<std::string>> entriesInFile;
 
-    if(!fileexists(bs_utils::getDataDir(modInfo) + "/MenuText.txt")){
-        std::ofstream MTFile(bs_utils::getDataDir(modInfo) + "/MenuText.txt");
+    //if the text file doesn't exist, create one and write an entry to it
+    if(!fileexists(textPath)){
+        std::ofstream MTFile(textPath);
 
         MTFile << "Empty File\n/sdcard/ModData/com.beatgames.beatsaber/Mods/QustomMenuText/MenuText.txt";
 
@@ -60,7 +62,7 @@ static std::vector<std::vector<std::string>> readFromFile() {
 
 
     //creates a stream from the file, and a temporary line and entry to store stuff to
-    std::ifstream infile(bs_utils::getDataDir(modInfo) + "/MenuText.txt");
+    std::ifstream infile(textPath);
     std::string line;
     std::vector<std::string> currentEntry;
     while (std::getline(infile, line))
@@ -127,7 +129,8 @@ static void setText(std::vector<std::string> lines) {
         bottomText->SetText(il2cpp_utils::newcsstr(lines[1]));
     }
     else {
-        tmpColorer(mainText, UnityEngine::Color::get_white());
+        mainText->set_color(UnityEngine::Color::get_blue());
+        tmpColorer(mainText, UnityEngine::Color::get_blue());
         bottomText->SetText(il2cpp_utils::createcsstr(""));
 
         UnityEngine::Vector3 newPos = mainText->get_transform()->get_position();
