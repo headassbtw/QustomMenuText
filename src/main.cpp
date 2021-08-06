@@ -122,6 +122,9 @@ static void tmpColorer(TMPro::TextMeshPro* in, UnityEngine::Color cl) {
     tempMat->SetColor(il2cpp_utils::createcsstr("_FaceColor"), SetSaturation(cl, 0.65f));
 }
 
+
+
+
 static void setText(std::vector<std::string> lines) {
 
     if(!mainText || !bottomText) return;
@@ -148,7 +151,12 @@ static void setText(std::vector<std::string> lines) {
         mainText->set_text(il2cpp_utils::newcsstr(temp));
     }
 }
-
+void setText_Simple(std::string str1, std::string str2){
+    std::vector<std::string> entrs;
+    entrs.push_back(str1);
+    if(str2 != "") entrs.push_back(str2);
+    setText(entrs);
+}
 static void pickRandomEntry() {
     try
     {

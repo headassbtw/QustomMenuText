@@ -37,22 +37,20 @@ void QustomMenuText::MainViewController::DidActivate(
     if (firstActivation) {
         GameObject* container = BeatSaberUI::CreateScrollableSettingsContainer(get_transform());
 
-        if (OVRPlugin::GetSystemHeadsetType() == OVRPlugin::SystemHeadset::Oculus_Quest) {
-            BeatSaberUI::CreateText(container->get_transform(), "<color=red>Detected Oculus Quest (1), certain tweaks *may* be unavailable.");
-        }
-
         std::vector<std::string> entrTops;
         entrTops.push_back("balls");
+        entrTops.push_back("your mother");
+        entrTops.push_back("i have no life");
         for(int i = 0; i < 10; i++)
         {
-            entrTops.push_back("balls" + std::to_string(i));
+            //entrTops.push_back("balls" + std::to_string(i));
         }
 
 
 
         BeatSaberUI::CreateDropdown(container->get_transform(), "Entry", "balls", entrTops,
                                     [](const std::string& value) {
-
+            setText_Simple(value);
         }
         );
 

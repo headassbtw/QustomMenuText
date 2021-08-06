@@ -29,6 +29,6 @@ Configuration& getConfig();
 
 static std::vector<std::vector<std::string>> allEntries;
 static bool HasFakeGlow;
-static void setText(std::vector<std::string> lines);
+extern void setText_Simple(std::string str1, std::string str2 = "");
 Logger& getLogger();
 
