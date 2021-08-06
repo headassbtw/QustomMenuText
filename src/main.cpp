@@ -28,7 +28,6 @@
 #include "UnityEngine/Texture.hpp"
 #include "UnityEngine/RectTransform.hpp"
 #include "UnityEngine/RectTransform_Axis.hpp"
-//#include "bs-utils/shared/utils.hpp"
 #include "beatsaber-hook/shared/utils/hooking.hpp"
 
 #include "beatsaber-hook/shared/utils/il2cpp-utils.hpp"
@@ -40,8 +39,9 @@ static ModInfo modInfo; // Stores the ID and version of our mod, and is sent to 
 
 static TMPro::TextMeshPro* mainText = nullptr;
 static TMPro::TextMeshPro* bottomText = nullptr;
+
 static std::string textPath = "";
-static std::vector<std::vector<std::string>> allEntries;
+//static std::vector<std::vector<std::string>> allEntries; defined in the header
 UnityEngine::GameObject* logo = nullptr;
 static UnityEngine::GameObject* textPrefab = nullptr;
 
@@ -116,7 +116,9 @@ static void tmpColorer(TMPro::TextMeshPro* in, UnityEngine::Color cl) {
     UnityEngine::Material* tempMat = in->get_fontMaterial();
     UnityEngine::Color tmpGlowColor = cl;
     tmpGlowColor.a = 0.5f;
-    tempMat->SetColor(il2cpp_utils::createcsstr("_GlowColor"), cl);
+    if(HasFakeGlow) tempMat->SetColor(il2cpp_utils::createcsstr("_GlowColor"), cl);
+    if(!HasFakeGlow) tempMat->SetColor(il2cpp_utils::createcsstr("_GlowColor"), UnityEngine::Color::get_clear());
+
     tempMat->SetColor(il2cpp_utils::createcsstr("_FaceColor"), SetSaturation(cl, 0.65f));
 }
 
@@ -321,13 +323,14 @@ extern "C" void setup(ModInfo& info) {
 	
     getConfig().Load(); // Load the config file
     getLogger().info("Completed setup!");
+
 }
 
 // Called later on in the game loading - a good time to install function hooks
 extern "C" void load() {
     il2cpp_functions::Init();
-
-
+    QustomMenuText::Install();
+    HasFakeGlow = true;
 
 
     getLogger().info("Installing hooks...");

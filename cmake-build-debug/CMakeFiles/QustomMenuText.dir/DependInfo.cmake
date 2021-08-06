@@ -8,6 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
+  "/home/headass/cppProjects/QustomMenuText/src/QMT.cpp" "/home/headass/cppProjects/QustomMenuText/cmake-build-debug/CMakeFiles/QustomMenuText.dir/src/QMT.cpp.o"
   "/home/headass/cppProjects/QustomMenuText/src/main.cpp" "/home/headass/cppProjects/QustomMenuText/cmake-build-debug/CMakeFiles/QustomMenuText.dir/src/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")

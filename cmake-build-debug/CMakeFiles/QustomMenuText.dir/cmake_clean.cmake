@@ -1,4 +1,5 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/QustomMenuText.dir/src/QMT.cpp.o"
   "CMakeFiles/QustomMenuText.dir/src/main.cpp.o"
   "libQustomMenuText.pdb"
   "libQustomMenuText.so"

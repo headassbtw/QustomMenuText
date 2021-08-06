@@ -21,13 +21,14 @@
 #include "UnityEngine/GameObject.hpp"
 #include "UnityEngine/AssetBundle.hpp"
 #include "System/Linq/Enumerable.hpp"
+#include "QMT.hpp"
 
 
 // Define these functions here so that we can easily read configuration and log information from other files
 Configuration& getConfig();
+
+static std::vector<std::vector<std::string>> allEntries;
+static bool HasFakeGlow;
+static void setText(std::vector<std::string> lines);
 Logger& getLogger();
 
-
-
-
-//UnityEngine::GameObject loadTextPrefab(Il2CppString path);

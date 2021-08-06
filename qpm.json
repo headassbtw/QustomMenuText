@@ -23,6 +23,16 @@
       "id": "bs-utils",
       "versionRange": "^0.6.2",
       "additionalData": {}
+    },
+    {
+      "id": "questui",
+      "versionRange": "*",
+      "additionalData": {}
+    },
+    {
+      "id": "custom-types",
+      "versionRange": "*",
+      "additionalData": {}
     }
   ],
   "additionalData": {}
