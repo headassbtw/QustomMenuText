@@ -37,13 +37,23 @@
 static ModInfo modInfo; // Stores the ID and version of our mod, and is sent to the modloader upon startup
 // Loads the config from disk using our modInfo, then returns it for use
 
-static TMPro::TextMeshPro* mainText = nullptr;
-static TMPro::TextMeshPro* bottomText = nullptr;
-
-static std::string textPath = "";
+TMPro::TextMeshPro* mainText = nullptr;
+TMPro::TextMeshPro* bottomText = nullptr;
+std::vector<std::string> currentTextEntry;
+std::string textPath = "";
 //static std::vector<std::vector<std::string>> allEntries; defined in the header
 UnityEngine::GameObject* logo = nullptr;
 static UnityEngine::GameObject* textPrefab = nullptr;
+
+void OverwriteFile(std::string contents){
+    if(fileexists(textPath)) std::remove(textPath.c_str());
+
+    std::ofstream MTFile(textPath);
+
+    MTFile << contents;
+
+    MTFile.close();
+}
 
 static std::vector<std::vector<std::string>> readFromFile() {
     if(textPath == "") textPath = bs_utils::getDataDir(modInfo) + "/MenuText.txt";
@@ -116,6 +126,7 @@ static void tmpColorer(TMPro::TextMeshPro* in, UnityEngine::Color cl) {
     UnityEngine::Material* tempMat = in->get_fontMaterial();
     UnityEngine::Color tmpGlowColor = cl;
     tmpGlowColor.a = 0.5f;
+
     if(HasFakeGlow) tempMat->SetColor(il2cpp_utils::createcsstr("_GlowColor"), cl);
     if(!HasFakeGlow) tempMat->SetColor(il2cpp_utils::createcsstr("_GlowColor"), UnityEngine::Color::get_clear());
 
@@ -127,6 +138,7 @@ static void tmpColorer(TMPro::TextMeshPro* in, UnityEngine::Color cl) {
 
 static void setText(std::vector<std::string> lines) {
 
+    currentTextEntry = lines;
     if(!mainText || !bottomText) return;
     if (lines.size() <= 0) return;
     else if (lines.size() == 2) {

@@ -21,12 +21,17 @@
 #include "UnityEngine/GameObject.hpp"
 #include "UnityEngine/AssetBundle.hpp"
 #include "System/Linq/Enumerable.hpp"
+#include "TMPro/TextMeshPro.hpp"
 #include "QMT.hpp"
 
 
 // Define these functions here so that we can easily read configuration and log information from other files
 Configuration& getConfig();
-
+extern TMPro::TextMeshPro* mainText;
+extern TMPro::TextMeshPro* bottomText;
+extern std::vector<std::string> currentTextEntry;
+extern std::string textPath;
+extern void OverwriteFile(std::string contents);
 static std::vector<std::vector<std::string>> allEntries;
 static bool HasFakeGlow;
 extern void setText_Simple(std::string str1, std::string str2 = "");

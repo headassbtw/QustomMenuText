@@ -1,10 +1,14 @@
 #include "QMT.hpp"
 #include "UI/MainFlowCoordinator.hpp"
 #include "main.hpp"
-
+#include "UnityEngine/UI/Button.hpp"
 #include "GlobalNamespace/OVRPlugin.hpp"
 #include "GlobalNamespace/OVRPlugin_SystemHeadset.hpp"
-
+#include "System/IO/Stream.hpp"
+#include "System/IO/FileStream.hpp"
+#include <fstream>
+#include <sstream>
+#include "System/String.hpp"
 using namespace GlobalNamespace;
 using namespace HMUI;
 using namespace QuestUI;
@@ -29,6 +33,9 @@ void QustomMenuText::Install(){
     //UI::MainSettingsModelSO();
 
 }
+std::string topString = "";
+std::string bottomString = "";
+
 void QustomMenuText::MainViewController::DidActivate(
         bool firstActivation,
         bool addedToHierarchy,
@@ -46,13 +53,39 @@ void QustomMenuText::MainViewController::DidActivate(
             //entrTops.push_back("balls" + std::to_string(i));
         }
 
+        topString = currentTextEntry[0];
+        bottomString = currentTextEntry[1];
 
-
-        BeatSaberUI::CreateDropdown(container->get_transform(), "Entry", "balls", entrTops,
-                                    [](const std::string& value) {
+        /*BeatSaberUI::CreateDropdown(container->get_transform(), "Entry", "balls", entrTops, [](const std::string& value) {
             setText_Simple(value);
         }
-        );
+        );*/
+
+        BeatSaberUI::CreateStringSetting(container->get_transform(), "Top Text", topString,
+                                         [](std::string value) {
+            topString = value;
+        });
+
+        BeatSaberUI::CreateStringSetting(container->get_transform(), "Bottom Text", bottomString,
+                                         [](std::string value) {
+            bottomString = value;
+        });
+
+        UnityEngine::UI::Button* applyButton = BeatSaberUI::CreateUIButton(container->get_transform(), "Apply",
+                                                           [this]() {
+            setText_Simple(topString, bottomString);
+
+            if(fileexists(textPath)) std::remove(textPath.c_str());
+            std::ofstream MTFile(textPath);
+
+            MTFile << topString;
+            MTFile << "\n";
+            MTFile << bottomString;
+
+            MTFile.close();
+        });
+        BeatSaberUI::AddHoverHint(applyButton->get_gameObject(), "Applies the text");
+
 
         BeatSaberUI::CreateToggle(container->get_transform(), "Fake Glow", false,
                                   [](bool value) {
