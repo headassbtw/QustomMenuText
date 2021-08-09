@@ -203,41 +203,28 @@ Logger& getLogger() {
 }
 
 static UnityEngine::GameObject* loadTextPrefab() {
-    try
-    {
-        Il2CppString* bundleFile = il2cpp_utils::createcsstr(bs_utils::getDataDir(modInfo) + "/Fonts/NeonTubes2");
+    std::string ABLocation = bs_utils::getDataDir(modInfo) + "/Fonts/NeonTubes2";
+    Il2CppString* bundleFile = il2cpp_utils::createcsstr(ABLocation);
 
+    if(fileexists(ABLocation)){
         UnityEngine::AssetBundle* textBundle = UnityEngine::AssetBundle::LoadFromFile(bundleFile);
-
         getLogger().info("Loaded Bundle");
-
         return textBundle->LoadAsset<UnityEngine::GameObject*>(il2cpp_utils::createcsstr("Text"));
-
     }
-    catch (const std::exception&)
-    {
-        getLogger().warning("fuck");
+    else{
         return nullptr;
     }
-    
 }
 
 MAKE_HOOK_MATCH(MainMenuViewController_DidActivate, &GlobalNamespace::MainMenuViewController::DidActivate, void, GlobalNamespace::MainMenuViewController* self, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
 {
     allEntries = readFromFile();
-
+    MainMenuViewController_DidActivate(self, firstActivation, addedToHierarchy, screenSystemEnabling);
 
 #pragma region AssetBundle Loading
-    try
-    {
-        if(!textPrefab) textPrefab = loadTextPrefab();
-    }
-    catch (const std::exception&)
-    {
-        getLogger().critical("Failed to load AssetBundle!");
-    }
+    if(!textPrefab) textPrefab = loadTextPrefab();
+    if(!textPrefab) return;
 #pragma endregion
-    MainMenuViewController_DidActivate(self, firstActivation, addedToHierarchy, screenSystemEnabling);
     getLogger().info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 #pragma region yeetDefaultLogo
     //leaving these here for later when i decide to add image replacement support
