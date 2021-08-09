@@ -225,6 +225,7 @@ MAKE_HOOK_MATCH(MainMenuViewController_DidActivate, &GlobalNamespace::MainMenuVi
     if(!textPrefab) textPrefab = loadTextPrefab();
     if(!textPrefab) return;
 #pragma endregion
+
     getLogger().info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 #pragma region yeetDefaultLogo
     //leaving these here for later when i decide to add image replacement support
@@ -319,13 +320,10 @@ MAKE_HOOK_MATCH(MainMenuViewController_DidActivate, &GlobalNamespace::MainMenuVi
     pickRandomEntry();
 }
 
-
-
-
 // Called at the early stages of game loading
 extern "C" void setup(ModInfo& info) {
     info.id = "QustomMenuText";
-    info.version = "0.1.1";
+    info.version = "0.1.7";
     modInfo = info;
 	
     getConfig().Load(); // Load the config file
@@ -335,7 +333,12 @@ extern "C" void setup(ModInfo& info) {
 
 // Called later on in the game loading - a good time to install function hooks
 extern "C" void load() {
+    #pragma region AssetBundle Loading
+    if(!textPrefab) textPrefab = loadTextPrefab();
+    if(!textPrefab) return;
+    #pragma endregion
     il2cpp_functions::Init();
+
     QustomMenuText::Install();
     HasFakeGlow = true;
 
