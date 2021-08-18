@@ -143,15 +143,17 @@ static void setText(std::vector<std::string> lines) {
     if (lines.size() <= 0) return;
     else if (lines.size() == 2) {
         mainText->SetText(il2cpp_utils::newcsstr(lines[0]));
+    	UnityEngine::Vector3 topPos(0.0f, 18.61f, 26.1f);
+    	mainText->get_transform()->set_position(topPos);
         bottomText->SetText(il2cpp_utils::newcsstr(lines[1]));
     }
     else {
         mainText->set_color(UnityEngine::Color::get_blue());
         tmpColorer(mainText, UnityEngine::Color::get_blue());
         bottomText->SetText(il2cpp_utils::createcsstr(""));
-
+	UnityEngine::Vector3 topPos(0.0f, 18.61f, 26.1f);
         UnityEngine::Vector3 newPos = mainText->get_transform()->get_position();
-        newPos.y = (newPos.y + bottomText->get_transform()->get_position().y) / 2;
+        newPos.y = (topPos.y + bottomText->get_transform()->get_position().y) / 2;
         mainText->get_transform()->set_localPosition(newPos);
 
 
