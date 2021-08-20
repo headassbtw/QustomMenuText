@@ -283,7 +283,7 @@ MAKE_HOOK_MATCH(MainMenuViewController_DidActivate, &GlobalNamespace::MainMenuVi
     UnityEngine::Vector3 topPos(0.0f, 18.61f, 26.1f);
     mainText->get_transform()->set_position(topPos);
     tmpColorer(mainText, topColor);
-    mainText->set_text(il2cpp_utils::createcsstr("FUCKIN"));
+    mainText->set_text(il2cpp_utils::createcsstr("BEAT"));
 #pragma endregion
    
 #pragma region BottomText //BOTTOM TEXT
@@ -317,19 +317,27 @@ MAKE_HOOK_MATCH(MainMenuViewController_DidActivate, &GlobalNamespace::MainMenuVi
     UnityEngine::Vector3 botPos = UnityEngine::Vector3(0.0f, 14.0f, 26.1f);
     bottomText->get_transform()->set_localPosition(botPos);
     tmpColorer(bottomText, bottomColor);
-    bottomText->set_text(il2cpp_utils::createcsstr("BEES"));
+    bottomText->set_text(il2cpp_utils::createcsstr("SABER"));
 #pragma endregion
 
     pickRandomEntry();
 }
 
 
+MAKE_HOOK_FIND_CLASS_UNSAFE_INSTANCE(MenuTransitionsHelper_RestartGame, "", "MenuTransitionsHelper", "RestartGame", void, Il2CppObject* self, Il2CppObject* finishCallback)
+{
+    mainText = nullptr;
+    bottomText = nullptr;
+    logo = nullptr;
+    textPrefab = nullptr;
+    MenuTransitionsHelper_RestartGame(self, finishCallback);
+}
 
 
 // Called at the early stages of game loading
 extern "C" void setup(ModInfo& info) {
     info.id = "QustomMenuText";
-    info.version = "0.2.1";
+    info.version = "0.2.3";
     modInfo = info;
 	
     getConfig().Load(); // Load the config file
@@ -348,6 +356,7 @@ extern "C" void load() {
     // Install our hooks (none defined yet)
 
     INSTALL_HOOK(getLogger(), MainMenuViewController_DidActivate);
+    INSTALL_HOOK(getLogger(), MenuTransitionsHelper_RestartGame);
 
 
 
