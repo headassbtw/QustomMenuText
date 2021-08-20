@@ -11,3 +11,4 @@ a mod for the oculus quest version of beat saber that replaces the "BEAT SABER" 
 ## Special Thanks
 
 * [FernTheDev](https://github.com/fernthedev), for helping me with my dumb C++ questions
+* [EnderdracheLP](https://github.com/enderdrachelp), for last-minute debugging while i was at school
