@@ -339,7 +339,7 @@ MAKE_HOOK_FIND_CLASS_UNSAFE_INSTANCE(MenuTransitionsHelper_RestartGame, "", "Men
 // Called at the early stages of game loading
 extern "C" void setup(ModInfo& info) {
     info.id = "QustomMenuText";
-    info.version = "0.2.4";
+    info.version = "0.3.0";
     modInfo = info;
 	
     getConfig().Load(); // Load the config file
