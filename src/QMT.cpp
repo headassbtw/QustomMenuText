@@ -101,14 +101,14 @@ void QustomMenuText::MainViewController::DidActivate(
         BeatSaberUI::AddHoverHint(applyButton->get_gameObject(), "Applies the text");
 
 
-        BeatSaberUI::CreateToggle(container->get_transform(), "Fake Glow", false,
+        /*BeatSaberUI::CreateToggle(container->get_transform(), "Fake Glow", false,
                                   [](bool value) {
             HasFakeGlow = value;
             getLogger().info("AAARGH");
             if(value)
                 getLogger().info("shitfuck");
         }
-        );
+        );*/
 
     }
 }
