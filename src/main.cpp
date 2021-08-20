@@ -213,7 +213,9 @@ static UnityEngine::GameObject* loadTextPrefab() {
     if(fileexists(ABLocation)){
         UnityEngine::AssetBundle* textBundle = UnityEngine::AssetBundle::LoadFromFile(bundleFile);
         getLogger().info("Loaded Bundle");
-        return textBundle->LoadAsset<UnityEngine::GameObject*>(il2cpp_utils::createcsstr("Text"));
+	GameObject* prefab = textBundle->LoadAsset<UnityEngine::GameObject*>(il2cpp_utils::createcsstr("Text"));
+	textBundle->Unload();
+        return prefab;
     }
     else{
         return nullptr;
