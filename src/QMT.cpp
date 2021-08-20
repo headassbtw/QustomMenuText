@@ -54,7 +54,10 @@ void QustomMenuText::MainViewController::DidActivate(
         }
 
         topString = currentTextEntry[0];
-        bottomString = currentTextEntry[1];
+        if(currentTextEntry.size() >= 2)
+            bottomString = currentTextEntry[1];
+        else
+            bottomString = "";
 
         /*BeatSaberUI::CreateDropdown(container->get_transform(), "Entry", "balls", entrTops, [](const std::string& value) {
             setText_Simple(value);
@@ -78,10 +81,21 @@ void QustomMenuText::MainViewController::DidActivate(
             if(fileexists(textPath)) std::remove(textPath.c_str());
             std::ofstream MTFile(textPath);
 
-            MTFile << topString;
-            MTFile << "\n";
-            MTFile << bottomString;
-
+            if(topString != "" && bottomString != ""){
+                MTFile << topString;
+                MTFile << "\n";
+                MTFile << bottomString;
+            }
+            if(topString == "" && bottomString != ""){
+                MTFile << bottomString;
+            }
+            if(topString == "" && bottomString == ""){
+                MTFile << "BEAT\nSABER";
+            }
+            if(topString != "" && bottomString == ""){
+                MTFile << topString;
+                MTFile << "\n";
+            }
             MTFile.close();
         });
         BeatSaberUI::AddHoverHint(applyButton->get_gameObject(), "Applies the text");

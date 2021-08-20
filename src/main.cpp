@@ -65,7 +65,7 @@ static std::vector<std::vector<std::string>> readFromFile() {
     if(!fileexists(textPath)){
         std::ofstream MTFile(textPath);
 
-        MTFile << "Empty File\n/sdcard/ModData/com.beatgames.beatsaber/Mods/QustomMenuText/MenuText.txt";
+        MTFile << "BEAT\nSABER";
 
         MTFile.close();
     }
@@ -130,7 +130,9 @@ static void tmpColorer(TMPro::TextMeshPro* in, UnityEngine::Color cl) {
     if(HasFakeGlow) tempMat->SetColor(il2cpp_utils::createcsstr("_GlowColor"), cl);
     if(!HasFakeGlow) tempMat->SetColor(il2cpp_utils::createcsstr("_GlowColor"), UnityEngine::Color::get_clear());
 
-    tempMat->SetColor(il2cpp_utils::createcsstr("_FaceColor"), SetSaturation(cl, 0.65f));
+    tempMat->SetColor(il2cpp_utils::createcsstr("_FaceColor"), SetSaturation(cl, 0.05f));
+
+    in->set_fontMaterial(tempMat);
 }
 
 
@@ -151,7 +153,7 @@ static void setText(std::vector<std::string> lines) {
         mainText->set_color(UnityEngine::Color::get_blue());
         tmpColorer(mainText, UnityEngine::Color::get_blue());
         bottomText->SetText(il2cpp_utils::createcsstr(""));
-	UnityEngine::Vector3 topPos(0.0f, 18.61f, 26.1f);
+	    UnityEngine::Vector3 topPos(0.0f, 18.61f, 26.1f);
         UnityEngine::Vector3 newPos = mainText->get_transform()->get_position();
         newPos.y = (topPos.y + bottomText->get_transform()->get_position().y) / 2;
         mainText->get_transform()->set_localPosition(newPos);
@@ -174,11 +176,11 @@ void setText_Simple(std::string str1, std::string str2){
 static void pickRandomEntry() {
     try
     {
-        srand(time(nullptr));
+        //srand(time(nullptr));
 
 
-        int entryPicked = rand() % allEntries.size();
-        setText(allEntries[entryPicked]);
+        //int entryPicked = rand() % allEntries.size();
+        setText(allEntries[0]);
     }
     catch (std::exception &e)
     {
@@ -327,7 +329,7 @@ MAKE_HOOK_MATCH(MainMenuViewController_DidActivate, &GlobalNamespace::MainMenuVi
 // Called at the early stages of game loading
 extern "C" void setup(ModInfo& info) {
     info.id = "QustomMenuText";
-    info.version = "0.1.1";
+    info.version = "0.2.1";
     modInfo = info;
 	
     getConfig().Load(); // Load the config file
