@@ -29,7 +29,6 @@
 #include "UnityEngine/RectTransform.hpp"
 #include "UnityEngine/RectTransform_Axis.hpp"
 #include "beatsaber-hook/shared/utils/hooking.hpp"
-
 #include "beatsaber-hook/shared/utils/il2cpp-utils.hpp"
 #include "beatsaber-hook/shared/utils/utils.h"
 
@@ -330,6 +329,8 @@ MAKE_HOOK_FIND_CLASS_UNSAFE_INSTANCE(MenuTransitionsHelper_RestartGame, "", "Men
     bottomText = nullptr;
     logo = nullptr;
     textPrefab = nullptr;
+    ClearAll();
+
     MenuTransitionsHelper_RestartGame(self, finishCallback);
 }
 

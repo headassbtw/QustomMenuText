@@ -23,6 +23,7 @@
 #include "System/Linq/Enumerable.hpp"
 #include "TMPro/TextMeshPro.hpp"
 #include "QMT.hpp"
+#include "image.h++"
 
 
 // Define these functions here so that we can easily read configuration and log information from other files
