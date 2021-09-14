@@ -4,18 +4,16 @@
     "name": "Quest Custom Menu Text",
     "id": "QustomMenuText",
     "author": "headassbtw",
-    "version": "0.2.4",
+    "version": "0.3.0",
     "packageId": "com.beatgames.beatsaber",
     "packageVersion": "1.16.4",
-    "description": "AAAAA",
+    "description": "Changes the menu text to a user-configurable text object",
     "modFiles": [
         "libQustomMenuText.so"
     ],
     "libraryFiles": [
-        "libbeatsaber-hook_2_2_4.so",
-        "libcodegen_0_12_5.so",
-        "libbs-utils.so",
-        "libquestui.so"
+        "libbeatsaber-hook_2_2_5.so",
+        "libbs-utils.so"
 
     ],
     "fileCopies":[
