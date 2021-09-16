@@ -6,6 +6,7 @@
 #include "GlobalNamespace/OVRPlugin_SystemHeadset.hpp"
 #include "System/IO/Stream.hpp"
 #include "System/IO/FileStream.hpp"
+#include "shared/BeatSaberUI.hpp"
 #include <fstream>
 #include <sstream>
 #include "System/String.hpp"
@@ -65,12 +66,12 @@ void QustomMenuText::MainViewController::DidActivate(
         );*/
 
         BeatSaberUI::CreateStringSetting(container->get_transform(), "Top Text", topString,
-                                         [](std::string value) {
+                                         [](std::string_view value) {
             topString = value;
         });
 
         BeatSaberUI::CreateStringSetting(container->get_transform(), "Bottom Text", bottomString,
-                                         [](std::string value) {
+                                         [](std::string_view value) {
             bottomString = value;
         });
 
