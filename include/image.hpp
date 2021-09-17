@@ -8,4 +8,4 @@
 
 extern void ClearAll();
 extern void FindLogos();
-extern void ReplaceBat(std::string imagePath);
+extern void Replace(UnityEngine::GameObject* gameObject, std::string imagePath);

@@ -54,12 +54,7 @@ UnityEngine::Sprite* SpriteFromPNG(std::string filePath){
 
 void Replace(UnityEngine::GameObject* gameObject, std::string imagePath){
     UnityEngine::SpriteRenderer* lsr = gameObject->GetComponent<UnityEngine::SpriteRenderer*>();
-    //UnityEngine::Sprite* tmp = lsr.
     UnityEngine::Texture2D* spng = LoadPNG(imagePath);
     UnityEngine::Rect* sRect = new UnityEngine::Rect(0, 0, 128, 128);
     lsr->set_sprite(SpriteFromPNG(imagePath));
-}
-
-void ReplaceBat(std::string imagePath){
-    Replace(BatLogo, "");
 }

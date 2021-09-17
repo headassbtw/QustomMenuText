@@ -1,4 +1,5 @@
 #include "main.hpp"
+#include "image.hpp"
 #include "TMPro/TextMeshPro.hpp"
 #include "GlobalNamespace/MainMenuViewController.hpp"
 #include "GlobalNamespace/ShaderWarmupSceneSetup.hpp"
@@ -221,12 +222,9 @@ static UnityEngine::GameObject* loadTextPrefab() {
     }
 }
 
-MAKE_HOOK_MATCH(MainMenuViewController_DidActivate, &GlobalNamespace::MainMenuViewController::DidActivate, void, GlobalNamespace::MainMenuViewController* self, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
-{
+void DoTMPReplace(){
     allEntries = readFromFile();
-    MainMenuViewController_DidActivate(self, firstActivation, addedToHierarchy, screenSystemEnabling);
-
-#pragma region AssetBundle Loading
+    #pragma region AssetBundle Loading
     if(!textPrefab) textPrefab = loadTextPrefab();
     if(!textPrefab) return;
 #pragma endregion
@@ -241,13 +239,13 @@ MAKE_HOOK_MATCH(MainMenuViewController_DidActivate, &GlobalNamespace::MainMenuVi
         saber1->SetActive(false);
         e->SetActive(false);*/
 
-        if(!logo) logo = UnityEngine::GameObject::Find(il2cpp_utils::createcsstr("Logo"));
-        if(logo->get_activeInHierarchy() == true)  logo->SetActive(false);
+    if(!logo) logo = UnityEngine::GameObject::Find(il2cpp_utils::createcsstr("Logo"));
+    if(logo->get_activeInHierarchy() == true)  logo->SetActive(false);
 #pragma endregion
     if (!textPrefab) textPrefab = loadTextPrefab();
     // Logo Top Pos : 0.63, 18.61, 26.1
     // Logo Bottom Pos : 0, 14, 26.1
-    
+
     UnityEngine::Color topColor = UnityEngine::Color::get_red();
     UnityEngine::Color bottomColor = UnityEngine::Color::get_blue();
 
@@ -265,8 +263,8 @@ MAKE_HOOK_MATCH(MainMenuViewController_DidActivate, &GlobalNamespace::MainMenuVi
             getLogger().info("main text was null, adding component");
             mainText = textObj->AddComponent<TMPro::TextMeshPro*>();
         }
-            if(mainText != nullptr)
-                getLogger().info("wait main text isn't null???");
+        if(mainText != nullptr)
+            getLogger().info("wait main text isn't null???");
         UnityEngine::MeshRenderer* mainMaterial = textObj->GetComponent<UnityEngine::MeshRenderer*>();
         mainText->set_alignment(TMPro::TextAlignmentOptions::Center);
         mainText->set_fontSize(12);
@@ -286,7 +284,7 @@ MAKE_HOOK_MATCH(MainMenuViewController_DidActivate, &GlobalNamespace::MainMenuVi
     tmpColorer(mainText, topColor);
     mainText->set_text(il2cpp_utils::createcsstr("BEAT"));
 #pragma endregion
-   
+
 #pragma region BottomText //BOTTOM TEXT
     if (bottomText == nullptr) {
         UnityEngine::GameObject* bt = UnityEngine::GameObject::Find(il2cpp_utils::createcsstr("CustomMenuText-Bot"));
@@ -322,6 +320,43 @@ MAKE_HOOK_MATCH(MainMenuViewController_DidActivate, &GlobalNamespace::MainMenuVi
 #pragma endregion
 
     pickRandomEntry();
+}
+
+
+bool HasPngFiles(){
+    std::string BatImg = bs_utils::getDataDir(modInfo) + "BatLogo.png";
+    std::string EImg = bs_utils::getDataDir(modInfo) + "ELogo.png";
+    std::string SaberImg = bs_utils::getDataDir(modInfo) + "SaberLogo.png";
+    if(fileexists(BatImg) || fileexists(EImg) || fileexists(SaberImg))
+        return true;
+    else
+        return false;
+
+}
+
+void DoImageReplace(){
+    std::string BatImg = bs_utils::getDataDir(modInfo) + "BatLogo.png";
+    std::string EImg = bs_utils::getDataDir(modInfo) + "ELogo.png";
+    std::string SaberImg = bs_utils::getDataDir(modInfo) + "SaberLogo.png";
+
+    UnityEngine::GameObject* Beat = UnityEngine::GameObject::Find(il2cpp_utils::createcsstr("BatLogo"));
+    UnityEngine::GameObject* Saber = UnityEngine::GameObject::Find(il2cpp_utils::createcsstr("SaberLogo"));
+    UnityEngine::GameObject* E = UnityEngine::GameObject::Find(il2cpp_utils::createcsstr("EFlickering"));
+
+    if(fileexists(BatImg)) Replace(Beat, BatImg);
+    if(fileexists(EImg)) Replace(E, EImg);
+    if(fileexists(SaberImg)) Replace(Saber, SaberImg);
+
+
+}
+
+MAKE_HOOK_MATCH(MainMenuViewController_DidActivate, &GlobalNamespace::MainMenuViewController::DidActivate, void, GlobalNamespace::MainMenuViewController* self, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
+{
+    MainMenuViewController_DidActivate(self, firstActivation, addedToHierarchy, screenSystemEnabling);
+    if(HasPngFiles())
+        DoImageReplace();
+    else
+        DoTMPReplace();
 }
 
 
