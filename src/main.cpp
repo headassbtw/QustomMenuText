@@ -65,7 +65,7 @@ static std::vector<std::vector<std::string>> readFromFile() {
     if(!fileexists(textPath)){
         std::ofstream MTFile(textPath);
 
-        MTFile << "BEAT\nSABER";
+        MTFile << "MERRY\nQUESTMAS";
 
         MTFile.close();
     }
@@ -282,7 +282,7 @@ void DoTMPReplace(){
     UnityEngine::Vector3 topPos(0.0f, 18.61f, 26.1f);
     mainText->get_transform()->set_position(topPos);
     tmpColorer(mainText, topColor);
-    mainText->set_text(il2cpp_utils::createcsstr("BEAT"));
+    mainText->set_text(il2cpp_utils::createcsstr("MERRY"));
 #pragma endregion
 
 #pragma region BottomText //BOTTOM TEXT
@@ -316,7 +316,8 @@ void DoTMPReplace(){
     UnityEngine::Vector3 botPos = UnityEngine::Vector3(0.0f, 14.0f, 26.1f);
     bottomText->get_transform()->set_localPosition(botPos);
     tmpColorer(bottomText, bottomColor);
-    bottomText->set_text(il2cpp_utils::createcsstr("SABER"));
+    bottomText->set_text(il2cpp_utils::createcsstr("QUESTMAS"));
+    getLogger().info("hi pink");
 #pragma endregion
 
     pickRandomEntry();
@@ -366,7 +367,7 @@ MAKE_HOOK_FIND_CLASS_UNSAFE_INSTANCE(MenuTransitionsHelper_RestartGame, "", "Men
     bottomText = nullptr;
     logo = nullptr;
     textPrefab = nullptr;
-    ClearAll();
+    //ClearAll();
 
     MenuTransitionsHelper_RestartGame(self, finishCallback);
 }
@@ -375,7 +376,7 @@ MAKE_HOOK_FIND_CLASS_UNSAFE_INSTANCE(MenuTransitionsHelper_RestartGame, "", "Men
 // Called at the early stages of game loading
 extern "C" void setup(ModInfo& info) {
     info.id = "QustomMenuText";
-    info.version = "0.3.1";
+    info.version = "0.3.2";
     modInfo = info;
 	
     getConfig().Load(); // Load the config file

@@ -91,7 +91,7 @@ void QustomMenuText::MainViewController::DidActivate(
                 MTFile << bottomString;
             }
             if(topString == "" && bottomString == ""){
-                MTFile << "BEAT\nSABER";
+                MTFile << "MERRY\nQUESTMAS";
             }
             if(topString != "" && bottomString == ""){
                 MTFile << topString;
